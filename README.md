@@ -1,96 +1,360 @@
-# JanaSetu (जनसेतु) — Civic Problem Management Platform
+<div align="center">
 
-> **A transparent, accountable bridge connecting citizens directly with municipal authorities.**
-> Built strictly adhering to the 25 sections of `JanaSetu_Complete_Solution.docx` and `JanaSetu_MVP_Implementation_Plan.md`.
+# 🌉 JanaSetu
 
----
+### *A transparent bridge between citizens and government.*
 
-## 🏛️ Core Principles Implemented
+**Report on WhatsApp. Track in one link. Verified by AI and by people.**
 
-1. **WhatsApp-First Citizen Channel**: Citizens report through WhatsApp with zero app installation needed. Photo, video, voice note, text, and GPS pin supported across Indian languages.
-2. **Citizen Confirmation Gate (Principle §2)**: AI never registers a complaint alone. The citizen must confirm the AI-identified category before it becomes an official civic record.
-3. **One Problem = One Problem ID = One Tracking Link (Principle §3 & §5)**:
-   - High-density deduplication via semantic vector similarity and 50–100m geo-clustering.
-   - Additional reporters are linked to the same instance (`reporter_count` acts as an urgent priority signal).
-4. **Department-First Routing (Principle §6)**: Municipal department classification occurs *before* priority calculation.
-5. **Fixed Priority Engine Weights (Principle §6 & §9)**:
-   $$\text{Score} = (\text{Base} + \text{Severity} \times W_1 + \text{Reporters} \times W_2 + \text{Aging} \times W_3 + \text{Recurrence})$$
-   Configurable from the Municipal Admin Settings panel.
-6. **48-Hour SLA Resolution Deadline (Principle §16)**:
-   - Audited human-in-the-loop approval for deadline extensions.
-   - Unsatisfactory reasons result in officer accountability flags.
-7. **Camera Location-First Evidence Verification (Principle §18)**:
-   - Field staff submit evidence via browser camera capture with GPS location-lock.
-   - Gemini Flash multimodal AI verifies before-and-after consistency, checking for blank, blurry, irrelevant, or duplicate photos.
-8. **Citizen Dual-Verification Before Closure (Principle §20)**:
-   - WhatsApp YES / NO prompt sent to citizens upon officer evidence submission.
-   - An active citizen "NO" triggers reopening back into the queue.
-9. **Officer Accountability History & Reassignment Guard (Principle §22)**:
-   - Tamper-evident cryptographic hash chain audit log.
-   - Recurring or reopened issues are never blindly reassigned to the same officer.
+![Status](https://img.shields.io/badge/status-in%20development-orange)
+![Platform](https://img.shields.io/badge/citizen%20interface-WhatsApp-25D366?logo=whatsapp&logoColor=white)
+![AI](https://img.shields.io/badge/AI-multimodal-blueviolet)
+![License](https://img.shields.io/badge/license-MIT-blue)
+![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)
+
+[Overview](#-overview) · [Features](#-key-features) · [How It Works](#-how-it-works) · [Architecture](#-architecture) · [Getting Started](#-getting-started) · [Roadmap](#-roadmap)
+
+</div>
 
 ---
 
-## 🚀 Key Interfaces & Routes
+## 📖 Overview
 
-| Portal | URL | Description | Design Reference |
-|---|---|---|---|
-| **Citizen Reporting Wizard** | [`/report`](http://localhost:3000/report) | 5-step wizard: Voice waveform, media upload, GPS lock, AI analysis, and citizen confirmation gate | `style/8.jpeg` |
-| **Citizen Portal & Green Points** | [`/citizen`](http://localhost:3000/citizen) | 1,250 Green Points, rank badge, active complaint tracker, nearby community alerts | `style/4.jpeg` |
-| **Community Verification** | [`/citizen/community`](http://localhost:3000/citizen/community) | Multi-voting (`Yes`, `No`, `Already Resolved`), 200m radar map, citizen avatars | `style/5.jpeg` |
-| **Municipal Heatmap** | [`/dashboard/heatmap`](http://localhost:3000/dashboard/heatmap) | Ward cluster markers (`31`, `23`, `18`), dual-view heatmap, inspection drawer | `style/6.jpeg` & `7.jpeg` |
-| **Municipal Reports Center** | [`/dashboard/reports`](http://localhost:3000/dashboard/reports) | Resolution metrics, downloadable PDF/XLSX reports, custom date generator | `style/9.jpeg` |
-| **Interactive WhatsApp Simulator** | [`/whatsapp-demo`](http://localhost:3000/whatsapp-demo) | In-browser citizen WhatsApp bot simulator for end-to-end testing | WhatsApp screenshots |
-| **Field Officer Portal** | [`/officer`](http://localhost:3000/officer) | Mobile-first task list, camera location-first capture, live AI verification | Mobile field portal |
-| **Public Tracking Dossier** | [`/t/[token]`](http://localhost:3000/t/token-indore-001) | Tokenized public status page, DPDP Act 2023 compliant privacy filtering | Public tracking |
-| **Municipal Command Center** | [`/dashboard`](http://localhost:3000/dashboard) | City-wide KPIs, prioritized complaint queues, SLA countdowns | Master dashboard |
+**JanaSetu** (*Jana* = people, *Setu* = bridge) is a citizen-to-government civic problem management platform. Citizens report everyday problems such as potholes, drainage and sewer leaks, garbage build-up, water-pipeline leakage, contaminated water, broken streetlights, and damaged public infrastructure through **WhatsApp**, with no heavy app, no confusing dashboards, and no pile of buttons.
 
----
+Behind the chat, JanaSetu combines **multimodal AI, location verification, complaint clustering, department routing, weighted prioritisation, transparent tracking, and AI-assisted resolution verification** so that government teams can answer the questions that usually go unanswered:
 
-## 🛠️ Technology Stack
+| Question | How JanaSetu answers it |
+|---|---|
+| Which department is responsible? | AI department classification |
+| What should be handled first? | Department-aware, weighted priority scoring |
+| Which complaints are the same issue? | Duplicate detection and clustering |
+| Who should fix it? | Officer-assignment suggestions (human-approved) |
+| Was it *actually* fixed? | AI verification and citizen verification |
+| What if it's reported again? | Historical lookup and officer reassignment |
+| How does the citizen know what's happening? | One shared, public tracking link per problem |
 
-- **Frontend & Backend**: Next.js 14 (App Router, React 18, TypeScript)
-- **Styling**: Tailwind CSS with rich municipal color tokens (`#1B8A2A`, `#0F5132`, `#F59E0B`, `#DC2626`)
-- **Maps**: Leaflet + OpenStreetMap tiles (100% free, zero SaaS cost)
-- **AI Multimodal Layer**: Google Gemini API (`gemini-2.0-flash` / `gemini-1.5-flash`) for audio transcription, classification, and before-and-after evidence verification
-- **Database & Auth**: Supabase Postgres with `pgvector` for deduplication embeddings, PostGIS-lite haversine geometry, and audit logging
-- **Security & Privacy**: DPDP Act 2023 compliant tokenized citizen projections, HMAC-SHA256 signature verification for WhatsApp webhooks, cryptographic SHA-256 hash chains for audit trails
+> **Citizens** interact through **WhatsApp**. **Government and department officers** work in dedicated **dashboards**.
 
 ---
 
-## 📦 Developer Quickstart
+## ✨ Key Features
 
-### 1. Prerequisites
-- Node.js 18+ (tested on Node.js v24.19.0)
-- npm 9+
+### 👥 For Citizens
+- 📱 **WhatsApp-first reporting**: send a photo, video, voice note, text, or any combination
+- 🗣️ **Multilingual**: voice notes in regional languages are transcribed and understood
+- ✅ **Confirm before it's filed**: the AI proposes a category and location, and the citizen approves both
+- 🔗 **One problem = one tracking link**: everyone reporting the same issue follows the same progress page
+- 🔔 **WhatsApp updates** at every stage, plus a final *"Was it really fixed?"* check
 
-### 2. Installation
-```bash
-git clone <repo-url>
-cd JanaSetuMVP
-npm install
+### 🏛️ For Government & Departments
+- 🧠 **Automatic department routing** (Water, Sewerage, Roads/PWD, Sanitation, Electricity/Streetlight, etc.)
+- 📊 **Priority queues per department** using configurable factors and fixed weightages
+- 📄 **Downloadable evidence reports**: photos, GPS, linked-complaint count, population impact, score breakdown
+- 👷 **Smart officer suggestions** based on availability, workload, location, and expertise
+- ⏱️ **48-hour resolution deadline** with a human-reviewed extension workflow
+- 🗂️ **Officer accountability history** that supports human decisions without auto-punishing anyone
+
+### 🛡️ Anti-Fraud & Integrity
+- 🚫 **Evidence upload ≠ resolution**: uploading a file never stops the clock by itself
+- 🔍 **Two-layer evidence check**: location verification, then AI relevance and quality analysis
+- 🧑‍⚖️ **Human-first verification**: valid citizen feedback outranks AI, and AI never silently overrides a "NO"
+- 🔁 **Repeat-failure protection**: a problem that recurs is never reassigned to the same officer
+
+---
+
+## 🔄 How It Works
+
+```mermaid
+flowchart TD
+    A[Citizen sends photo / video / voice / text on WhatsApp] --> B[AI Problem Classification]
+    B --> C{Citizen confirms category?}
+    C -- No --> B
+    C -- Yes --> D[Location Identification & Confirmation]
+    D --> E{Similar complaint nearby?}
+    E -- Yes --> F[Cluster into existing Problem ID]
+    E -- No --> G[Create new Problem ID]
+    F --> H[Department Classification]
+    G --> H
+    H --> I[Weighted Priority Calculation]
+    I --> J[Government reviews and assigns department]
+    J --> K[Officer Assignment, human approved]
+    K --> L[48h deadline starts]
+    L --> M[Officer submits resolution evidence]
+    M --> N[Evidence Validation + AI Verification]
+    N --> O[Citizen Verification via WhatsApp]
+    O --> P[Closure]
 ```
 
-### 3. Environment Variables
-Copy `.env.local.example` to `.env.local`:
-```bash
-cp .env.local.example .env.local
-```
-*(The platform runs out-of-the-box in demo mode with rich municipal data even without external API keys).*
+### 1️⃣ Report
+A citizen sends a photo, video, voice note, or text. Voice goes through *Speech-to-Text → Language Understanding → Classification*. Images and video are analysed directly.
 
-### 4. Database Setup (Optional for live Supabase)
-```bash
-npm run db:migrate   # Verifies or applies supabase/schema.sql
-npm run db:seed      # Seeds municipal corporation wards and officers
+### 2️⃣ Confirm
+> *"We identified this as a road/pothole problem. Is this correct?"*
+
+Nothing becomes an official complaint until the citizen says **Yes**. The same applies to the location, whether it was shared as live location, GPS, a landmark, a nearby shop, an intersection, or a voice description.
+
+### 3️⃣ Cluster
+Three people reporting *"pipe leaking near XYZ Market"* in three different ways become **one** problem instance. The number of reporters is kept as a **priority signal**, and every reporter receives the same tracking link.
+
+### 4️⃣ Route and Prioritise
+Complaints are first routed to the responsible department, then ranked **within that department** using configurable factors:
+
+- Number of linked complaints
+- Estimated population affected
+- Severity
+- Geographic impact
+- Duration of the problem
+- Other government-defined factors
+
+There is no single global queue. Each department gets its own, with a transparent score breakdown.
+
+### 5️⃣ Assign and Resolve
+Government reviews the prioritised list and assigns it to departments. The system suggests an available officer, and an authorised human makes the final call. The officer also receives AI-generated resolution recommendations (equipment, manpower, cost, and time estimates drawn from similar past cases).
+
+### 6️⃣ Verify, Not Just Upload
+When an officer claims the work is done, JanaSetu verifies the **outcome** and not merely the existence of a file:
+
+```
+Officer submits evidence
+        │
+        ├─ Camera capture via portal ─► location check ─┐
+        └─ Gallery upload ──────────────────────────────┤
+                                                        ▼
+                         AI analysis (always runs, pass or fail on location)
+                         • Is it the same problem and place?
+                         • Is it blank, black, vague, or unusable?
+                         • Is it duplicated or suspicious?
+                         • Are the before and after photos consistent?
+                                                        ▼
+                         Citizen verification via WhatsApp (YES / NO)
+                                                        ▼
+                                                    Closure
 ```
 
-### 5. Running the Application
-```bash
-# Start development server
-npm run dev
+### 7️⃣ Human + AI Decision Matrix
 
-# Or build and run production server
-npm run build
-npm run start
+| Case | AI says | Citizen says | Outcome |
+|:---:|:---:|:---:|---|
+| 1 | Resolved | ✅ Yes | **Resolution confirmed** |
+| 2 | Resolved | ❌ No | Citizen evidence triggers review or **reopening** |
+| 3 | Not resolved | ✅ Yes | Citizen confirmation considered per configured policy |
+| 4 | Resolved | ⏳ No response | Closed after the predefined response window |
+| 5 | Not resolved | ⏳ No response | **Stays open** until the AI reports resolved |
+
+> **Principle:** human confirmation takes priority, and AI acts as an additional layer and as a fallback when no human response arrives.
+
+---
+
+## 🔗 One Problem, One Tracking Link
+
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+ Citizen A ─┐
+ Citizen B ─┼──►  Problem ID: SV-XXXX  ──►  One Tracking Link
+ Citizen C ─┘
+```
+
+The public tracking page shows the problem category, general location, responsible department, assigned officer and designation (where legally permitted), assignment date, expected resolution time, current stage, work updates, shareable evidence, AI and citizen verification status, and escalation and closure status.
+
+🔒 **Privacy by design:** the page shows the *status of the problem*, never other citizens' personal information. Sensitive or legally restricted data is never exposed.
+
+---
+
+## 🧱 Architecture
+
+```
+┌───────────────┐      ┌──────────────────────────────────────────────────┐
+│   Citizen     │      │                  JanaSetu Backend                │
+│  (WhatsApp)   │◄────►│                                                  │
+└───────────────┘      │  Ingestion ─► Multimodal AI ─► Classification    │
+                       │                    │                             │
+┌───────────────┐      │  Location Service  │   Clustering Engine         │
+│ Tracking Page │◄─────│  Priority Engine   │   Dept. Router              │
+│   (public)    │      │  Assignment Engine │   Verification Engine       │
+└───────────────┘      │  Notification Svc  │   Accountability Ledger     │
+                       └───────────────┬──────────────────────────────────┘
+┌───────────────┐                      │
+│ Govt / Dept   │◄─────────────────────┘
+│  Dashboards   │         Database · Object Storage · Audit Logs
+└───────────────┘
+```
+
+| Module | Responsibility |
+|---|---|
+| **Ingestion** | Receive WhatsApp text, images, video, and voice |
+| **Multimodal AI** | Speech-to-text, language understanding, image/video classification |
+| **Location Service** | GPS, landmark, and address resolution and confirmation |
+| **Clustering Engine** | Detect duplicate and similar complaints by place, type, and time |
+| **Department Router** | Map problem categories to responsible departments |
+| **Priority Engine** | Weighted, configurable, department-aware scoring |
+| **Assignment Engine** | Suggest officers based on workload, expertise, and history |
+| **Verification Engine** | Location and AI evidence checks, plus citizen feedback logic |
+| **Notification Service** | WhatsApp updates and tracking-link delivery |
+| **Accountability Ledger** | Full evidence trail and officer performance history |
+
+### 🧰 Suggested Tech Stack
+
+> The stack below is a proposal and can be swapped for your own choices.
+
+| Layer | Suggested Technology |
+|---|---|
+| Messaging | WhatsApp Business Cloud API |
+| Backend | Python (FastAPI) or Node.js |
+| AI / ML | Multimodal LLM, speech-to-text, vision models, embedding-based clustering |
+| Database | PostgreSQL + PostGIS (geospatial queries) |
+| Storage | S3-compatible object storage |
+| Queue | Redis / Celery |
+| Dashboards | React + Tailwind CSS |
+| Maps | OpenStreetMap / Leaflet |
+| Deployment | Docker + CI/CD |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Python 3.11+ / Node.js 18+
+- PostgreSQL 15+ with PostGIS
+- A WhatsApp Business API account
+- API keys for your chosen AI provider
+
+### Installation
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/your-org/janasetu.git
+cd janasetu
+
+# 2. Configure environment
+cp .env.example .env
+# Fill in WhatsApp, database, and AI provider credentials
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Run database migrations
+alembic upgrade head
+
+# 5. Start the backend
+uvicorn app.main:app --reload
+
+# 6. Start the dashboard
+cd dashboard && npm install && npm run dev
+```
+
+### Environment Variables
+
+| Variable | Description |
+|---|---|
+| `WHATSAPP_TOKEN` | WhatsApp Business API access token |
+| `WHATSAPP_VERIFY_TOKEN` | Webhook verification token |
+| `DATABASE_URL` | PostgreSQL connection string |
+| `AI_API_KEY` | AI provider API key |
+| `STORAGE_BUCKET` | Object storage bucket for evidence |
+| `TRACKING_BASE_URL` | Base URL for public tracking links |
+| `RESPONSE_WINDOW_HOURS` | Citizen verification window before auto-closure |
+| `RESOLUTION_DEADLINE_HOURS` | Default task deadline (default: `48`) |
+
+### ⚙️ Configurable Policy
+
+Government bodies can tune platform behaviour without code changes:
+
+- Priority factors and their **weightages** (per department)
+- Citizen verification **response window**
+- Resolution **deadline** and extension rules
+- Fields shown on the **public tracking page**
+- Escalation rules
+
+---
+
+## 📂 Project Structure
+
+```
+janasetu/
+├── app/
+│   ├── ingestion/        # WhatsApp webhook, media handling
+│   ├── ai/               # Classification, speech, vision, verification
+│   ├── clustering/       # Duplicate / similar complaint detection
+│   ├── routing/          # Department classification
+│   ├── priority/         # Weighted priority engine
+│   ├── assignment/       # Officer suggestion logic
+│   ├── tracking/         # Public tracking pages
+│   ├── accountability/   # Officer history and audit trail
+│   └── main.py
+├── dashboard/            # Government and department dashboards
+├── docs/                 # Solution documentation
+├── tests/
+├── .env.example
+└── README.md
+```
+
+---
+
+## 🔐 Principles & Safeguards
+
+- **Human in the loop**: extensions, final assignments, and disciplinary decisions stay with authorised humans, and AI recommends but never punishes.
+- **Outcome over upload**: evidence submission and resolution verification are separate steps.
+- **Citizen voice wins**: AI never silently overrides an active "not resolved" response.
+- **Privacy first**: personal and legally restricted information is never shown publicly.
+- **Full audit trail**: every step from original evidence to closure is recorded.
+- **Penalties follow government rules**: any action follows applicable service regulations.
+
+---
+
+## 🔁 Never the Same Failure Twice
+
+If the AI wrongly marks a problem as resolved *and* the citizen never responds, the complaint may close while the problem persists. JanaSetu is built so that this can only happen **once**:
+
+1. A recurring complaint is **not** treated as brand new. The system checks the historical record: previous complaint, location, original and resolution evidence, previous officer, citizen verification, new evidence, and time gap.
+2. The same officer is **not** automatically reassigned to the recurring problem.
+3. Reassignment accounts for past unresolved and reopened cases.
+
+> ### *"Even in the worst case, we fail only once and never let it happen again."*
+
+---
+
+## 🗺️ Roadmap
+
+- [x] Solution design and workflow definition
+- [ ] WhatsApp ingestion (text, image, video, voice)
+- [ ] AI classification with citizen confirmation
+- [ ] Location capture and verification
+- [ ] Duplicate detection and clustering
+- [ ] Department routing and priority engine
+- [ ] Government and department dashboards
+- [ ] Officer assignment and AI recommendations
+- [ ] Public shared tracking page
+- [ ] Resolution verification (location + AI)
+- [ ] Citizen verification loop
+- [ ] Officer accountability history
+- [ ] Multi-city pilot
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m "Add amazing feature"`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+Please read `CONTRIBUTING.md` before submitting.
+
+---
+
+## 📜 License
+
+Distributed under the MIT License. See `LICENSE` for details.
+
+---
+
+<div align="center">
+
+**Built so that every citizen's voice reaches the right desk and stays visible until the problem is truly solved.**
+
+🌉 **JanaSetu**: *Citizens ↔ Government, with transparency in between.*
+
+</div>
